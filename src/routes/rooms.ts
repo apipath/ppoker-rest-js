@@ -6,10 +6,7 @@ import { validate } from 'class-validator';
 
 import { Room } from '../entity/Room';
 import { Option } from '../entity/Option';
-import {
-  NotFoundError,
-  UnprocessableEntityError,
-} from '../errors';
+import { NotFoundError, UnprocessableEntityError } from '../errors';
 
 const router = Router();
 
