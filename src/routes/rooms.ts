@@ -78,11 +78,11 @@ router.post(
 
       return option;
     });
-    const errors = await validate(room);
-    if (errors.length > 0) {
+    const [validationError] = await validate(room);
+    if (validationError) {
       throw new UnprocessableEntityError(
         ERROR_ROOM_CREATE_VALIDATION,
-        errors[0].toString(),
+        validationError.toString(),
       );
     }
 
