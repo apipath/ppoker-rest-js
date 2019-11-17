@@ -17,4 +17,4 @@ async function initialize(port: Number) {
   }
 }
 
-initialize(parseInt(process.env.PORT, 10) || 3000);
+initialize(parseInt(process.env.PORT, 10) || 3001);
