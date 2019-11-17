@@ -42,6 +42,7 @@
   },
   "scripts": {
     "tsc": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts",
     "start:prod": "yarn tsc && env NODE_ENV=production node ./dist",
     "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
