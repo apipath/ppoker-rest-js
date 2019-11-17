@@ -9,7 +9,7 @@ import routes from './routes';
 import { buildErrorHandler, notFoundHandler } from './errors';
 
 interface Writer {
-  write: (a: any) => void;
+  write: (str: string) => void;
 }
 
 interface Options {
