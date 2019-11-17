@@ -25,7 +25,6 @@ const app = createServer({
 
 const setDefaultHeaders = (httpRequest: request.Test) => {
   httpRequest.set('Accept', 'application/json');
-  httpRequest.set('Origin', 'http://localhost:3000');
 };
 
 export function get(url: string) {
