@@ -61,7 +61,8 @@ router.post(
       );
     }
 
-    if (!body.options || Array.from(body.options).length < 1) {
+    const hasOptions = body.options && Array.from(body.options).length > 0;
+    if (!hasOptions) {
       throw new UnprocessableEntityError(
         ERROR_ROOM_CREATE_EMPTY_OPTIONS,
         'Options cannot be empty',
