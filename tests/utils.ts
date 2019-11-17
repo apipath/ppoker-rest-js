@@ -3,9 +3,9 @@ import { getConnection } from 'typeorm';
 import * as winston from 'winston';
 
 import createServer from '../src/server';
-import { createConnection } from '../src/db';
+import { createDatabaseConnection } from '../src/db';
 
-export const setup = createConnection;
+export const setup = createDatabaseConnection;
 export const clearDb = () => getConnection().synchronize(true);
 
 function buildNoopLogger() {
