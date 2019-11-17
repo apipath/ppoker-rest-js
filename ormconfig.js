@@ -6,7 +6,7 @@ const rootDir =
 
 module.exports = {
   type: 'sqlite',
-  database: 'database.sqlite',
+  database: process.env.DB_NAME,
   synchronize: true,
   logging: false,
   entities: [`${rootDir}/entity/**/*.{js,ts}`],

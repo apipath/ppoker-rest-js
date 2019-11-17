@@ -8,6 +8,11 @@ import { Room } from '../entity/Room';
 import { Option } from '../entity/Option';
 import { NotFoundError, UnprocessableEntityError } from '../errors';
 
+const ERROR_ROOM_GET_BY_ID = 'ROOM_GET_BY_ID';
+const ERROR_ROOM_CREATE_EMPTY_DATA = 'ROOM_CREATE_EMPTY_DATA';
+const ERROR_ROOM_CREATE_EMPTY_OPTIONS = 'ROOM_CREATE_EMPTY_OPTIONS';
+const ERROR_ROOM_CREATE_VALIDATION = 'ROOM_CREATE_VALIDATION';
+
 const router = Router();
 
 router.get(
@@ -27,7 +32,7 @@ router.get(
     });
 
     if (!room) {
-      throw new NotFoundError('ROOM_GET_BY_ID', 'Room does not exists');
+      throw new NotFoundError(ERROR_ROOM_GET_BY_ID, 'Room does not exists');
     } else {
       res.send({ data: room });
     }
@@ -49,10 +54,19 @@ router.post(
   asyncHandler(async (req, res) => {
     const body: CreateRoom = req.body;
 
-    if (!body || Array.from(body.options).length < 1) {
-      res.status(HttpStatus.UNPROCESSABLE_ENTITY);
-      res.send();
-      return;
+    if (!body) {
+      throw new UnprocessableEntityError(
+        ERROR_ROOM_CREATE_EMPTY_DATA,
+        'Empty body sent',
+      );
+    }
+
+    const hasOptions = body.options && Array.from(body.options).length > 0;
+    if (!hasOptions) {
+      throw new UnprocessableEntityError(
+        ERROR_ROOM_CREATE_EMPTY_OPTIONS,
+        'Options cannot be empty',
+      );
     }
 
     const room = new Room();
@@ -65,12 +79,11 @@ router.post(
 
       return option;
     });
-    const errors = await validate(room);
-    if (errors.length > 0) {
-      // TODO: use logger
+    const [validationError] = await validate(room);
+    if (validationError) {
       throw new UnprocessableEntityError(
-        'ROOM_CREATE_VALIDATION_ERROR',
-        errors[0].toString(),
+        ERROR_ROOM_CREATE_VALIDATION,
+        validationError.toString(),
       );
     }
 

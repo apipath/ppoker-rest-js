@@ -1,14 +1,11 @@
 import * as path from 'path';
-import {
-  createConnection as typeormCreateConnection,
-  getConnectionOptions,
-} from 'typeorm';
+import { createConnection, getConnectionOptions } from 'typeorm';
 
 const staticOptions = {
   entities: [path.resolve(__dirname, 'entity/**/*')],
 };
 
-export async function createConnection() {
+export async function createDatabaseConnection() {
   const options = await getConnectionOptions();
-  return typeormCreateConnection({ ...options, ...staticOptions });
+  return createConnection({ ...options, ...staticOptions });
 }
