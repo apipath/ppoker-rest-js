@@ -49,8 +49,9 @@
   "scripts": {
     "tsc": "tsc",
     "test": "jest",
+    "build": "yarn tsc",
     "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts",
-    "start:prod": "yarn tsc && env NODE_ENV=production node ./dist",
+    "start:prod": "yarn build && env NODE_ENV=production node ./dist",
     "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
   }
 }
