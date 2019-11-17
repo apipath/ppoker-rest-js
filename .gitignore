@@ -7,3 +7,5 @@ temp/
 *.sqlite
 dist/
 logs/
+.env
+coverage/
