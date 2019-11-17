@@ -36,7 +36,7 @@ passionate developers.
 After cloning the repo:
 
 1. Install dependencies `yarn install`
-2. Run the dev server `yarn start`
+2. Run the dev server `yarn start:dev`
 3. Start building 🚀 
 
 ## Ideas
