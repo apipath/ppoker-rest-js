@@ -49,10 +49,18 @@ router.post(
   asyncHandler(async (req, res) => {
     const body: CreateRoom = req.body;
 
-    if (!body || Array.from(body.options).length < 1) {
-      res.status(HttpStatus.UNPROCESSABLE_ENTITY);
-      res.send();
-      return;
+    if (!body) {
+      throw new UnprocessableEntityError(
+        'ROOM_CREATE_EMPTY_DATA',
+        'Empty body sent',
+      );
+    }
+
+    if (!body.options || Array.from(body.options).length < 1) {
+      throw new UnprocessableEntityError(
+        'ROOM_CREATE_EMPTY_OPTIONS',
+        'Options cannot be empty',
+      );
     }
 
     const room = new Room();
@@ -67,7 +75,6 @@ router.post(
     });
     const errors = await validate(room);
     if (errors.length > 0) {
-      // TODO: use logger
       throw new UnprocessableEntityError(
         'ROOM_CREATE_VALIDATION_ERROR',
         errors[0].toString(),
