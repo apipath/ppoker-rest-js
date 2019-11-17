@@ -26,13 +26,21 @@ describe('Rooms Routes', () => {
     });
   });
 
+  const buildRoom = ({
+    name = 'foo',
+    description = 'bar',
+    options = [],
+  } = {}) => ({
+    name,
+    description,
+    options,
+  });
+
   describe('POST /rooms', () => {
     it('should create a room', async () => {
-      const room = {
-        name: 'foo',
-        description: 'bar',
+      const room = buildRoom({
         options: [{ label: 'option label', value: 'option value' }],
-      };
+      });
       const res = await post('/rooms', room);
       expect(res.status).toEqual(HttpStatus.CREATED);
       expect(res.body).toHaveProperty('data');
@@ -40,10 +48,9 @@ describe('Rooms Routes', () => {
     });
 
     it('should return an error if no options are sent', async () => {
-      const roomWithNoOptions = {
-        name: 'foo',
-        description: 'bar',
-      };
+      const roomWithNoOptions = buildRoom({
+        options: undefined,
+      });
       const res = await post('/rooms', roomWithNoOptions);
       expect(res.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
       expect(res.body).toHaveProperty(
@@ -53,12 +60,8 @@ describe('Rooms Routes', () => {
     });
 
     it('should return an error if empty options are sent', async () => {
-      const roomWithNoOptions = {
-        name: 'foo',
-        description: 'bar',
-        options: [],
-      };
-      const res = await post('/rooms', roomWithNoOptions);
+      const roomWithEmptyOptionsArray = buildRoom({ options: [] });
+      const res = await post('/rooms', roomWithEmptyOptionsArray);
       expect(res.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
       expect(res.body).toHaveProperty(
         'error.status',
@@ -67,15 +70,13 @@ describe('Rooms Routes', () => {
     });
 
     it('should return an error if options without value are sent', async () => {
-      const roomWithNoOptions = {
-        name: 'foo',
-        description: 'bar',
+      const roomWithInvalidOptions = buildRoom({
         options: [
           { label: 'option label', value: 'option value' },
           { label: 'option without value' },
         ],
-      };
-      const res = await post('/rooms', roomWithNoOptions);
+      });
+      const res = await post('/rooms', roomWithInvalidOptions);
       expect(res.status).toEqual(HttpStatus.UNPROCESSABLE_ENTITY);
       expect(res.body).toHaveProperty(
         'error.status',
