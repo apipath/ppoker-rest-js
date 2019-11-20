@@ -3,8 +3,15 @@ import { IsNotEmpty } from 'class-validator';
 
 import { Room } from './Room';
 
+export interface OptionInterface {
+  id: number;
+  label: string;
+  value: string;
+  room: Room;
+}
+
 @Entity()
-export class Option {
+export class Option implements OptionInterface {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -26,4 +33,11 @@ export class Option {
     { onDelete: 'CASCADE' },
   )
   room: Room;
+
+  static New({ label, value }) {
+    const option: OptionInterface = new Option();
+    option.label = label;
+    option.value = value;
+    return option;
+  }
 }

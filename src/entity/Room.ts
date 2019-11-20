@@ -3,8 +3,14 @@ import { IsNotEmpty, ValidateNested } from 'class-validator';
 
 import { Option } from './Option';
 
+export interface RoomInterface {
+  name: string;
+  description?: string;
+  options: Option[];
+}
+
 @Entity()
-export class Room {
+export class Room implements RoomInterface {
   @PrimaryGeneratedColumn()
   id: number;
 
