@@ -53,7 +53,7 @@
     "test": "jest",
     "build": "yarn tsc",
     "start": "env NODE_ENV=production node ./dist",
-    "star:dev": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts",
+    "start:dev": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts",
     "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
   },
   "husky": {
