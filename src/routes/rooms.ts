@@ -4,14 +4,15 @@ import * as asyncHandler from 'express-async-handler';
 import * as HttpStatus from 'http-status-codes';
 import { validate } from 'class-validator';
 
-import { Room } from '../entity/Room';
-import { Option } from '../entity/Option';
+import { Room, RoomInterface } from '../entity/Room';
+import { Option, OptionInterface } from '../entity/Option';
 import { NotFoundError, UnprocessableEntityError } from '../errors';
-
-const ERROR_ROOM_GET_BY_ID = 'ROOM_GET_BY_ID';
-const ERROR_ROOM_CREATE_EMPTY_DATA = 'ROOM_CREATE_EMPTY_DATA';
-const ERROR_ROOM_CREATE_EMPTY_OPTIONS = 'ROOM_CREATE_EMPTY_OPTIONS';
-const ERROR_ROOM_CREATE_VALIDATION = 'ROOM_CREATE_VALIDATION';
+import {
+  ERROR_ROOM_GET_BY_ID,
+  ERROR_ROOM_CREATE_VALIDATION,
+  ERROR_ROOM_GET_BY_ID_MESSAGE,
+} from './strings';
+import { ValidationRoomStatus, validateRoom } from '../validation/rooms';
 
 const router = Router();
 
@@ -32,53 +33,31 @@ router.get(
     });
 
     if (!room) {
-      throw new NotFoundError(ERROR_ROOM_GET_BY_ID, 'Room does not exists');
+      throw new NotFoundError(
+        ERROR_ROOM_GET_BY_ID,
+        ERROR_ROOM_GET_BY_ID_MESSAGE,
+      );
     } else {
       res.send({ data: room });
     }
   }),
 );
 
-// TODO: discuss if it's fine that types are verbs.
-type CreateRoom = {
-  name?: string;
-  description?: string;
-  options: Array<{
-    label?: string;
-    value?: string;
-  }>;
-};
-
 router.post(
   '/',
   asyncHandler(async (req, res) => {
-    const body: CreateRoom = req.body;
+    const newRoom: RoomInterface = req.body;
+    const { status, error, message } = validateRoom(newRoom);
 
-    if (!body) {
-      throw new UnprocessableEntityError(
-        ERROR_ROOM_CREATE_EMPTY_DATA,
-        'Empty body sent',
-      );
+    if (status === ValidationRoomStatus.INVALID) {
+      throw new UnprocessableEntityError(error, message);
     }
 
-    const hasOptions = body.options && Array.from(body.options).length > 0;
-    if (!hasOptions) {
-      throw new UnprocessableEntityError(
-        ERROR_ROOM_CREATE_EMPTY_OPTIONS,
-        'Options cannot be empty',
-      );
-    }
+    const room: Room = new Room();
+    room.name = newRoom.name;
+    room.description = newRoom.description || 'empty description';
+    room.options = newRoom.options.map(Option.New);
 
-    const room = new Room();
-    room.name = body.name;
-    room.description = body.description;
-    room.options = body.options.map(params => {
-      const option = new Option();
-      option.label = params.label;
-      option.value = params.value;
-
-      return option;
-    });
     const [validationError] = await validate(room);
     if (validationError) {
       throw new UnprocessableEntityError(
@@ -88,6 +67,7 @@ router.post(
     }
 
     await getRepository(Room).save(room);
+
     res.status(HttpStatus.CREATED);
     res.send({ data: room });
   }),
