@@ -45,7 +45,7 @@
     "morgan": "^1.9.1",
     "reflect-metadata": "^0.1.10",
     "sqlite3": "^4.0.3",
-    "typeorm": "0.2.20",
+    "typeorm": "0.2.25",
     "winston": "^3.2.1"
   },
   "scripts": {
